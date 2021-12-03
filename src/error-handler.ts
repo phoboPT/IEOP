@@ -1,12 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from 'express';
 
-export const errorHandler = (
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const errorHandler = (err: Error, req: Request, res: Response) => {
   res.status(400).send({
-    errors: [{ message: "Something went very wrong", error: err }],
+    errors: [{ message: 'Something went very wrong', error: err }],
   });
 };
+
+export default errorHandler;

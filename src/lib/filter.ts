@@ -1,5 +1,6 @@
-import { IClients } from "../interfaces/interfaces";
+import { IClients } from '../interfaces/interfaces';
 
-export const filterClient = (name: string, clients: IClients) => {
-  return clients.filter((client) => client.name === name);
-};
+const filterClient = (name: string, clients: IClients) =>
+  clients.filter((client) => client.name === name);
+
+export default filterClient;

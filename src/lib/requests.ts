@@ -1,39 +1,36 @@
-import request, { CoreOptions, RequiredUriUrl } from "request";
-import { IItem, IItems } from "../interfaces/interfaces";
-require("dotenv").config();
+import request from 'request';
 
-interface IRequest extends CoreOptions {
-  data: object;
-}
-const doRequest = (url: string, method = "GET", data?: {}): any => {
-  return new Promise((resolve, reject) => {
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
+
+const doRequest = (
+  url: string,
+  token: string,
+  data?: Record<string, unknown>,
+  method = 'GET',
+): any =>
+  new Promise((resolve, reject): any => {
     request(
       {
-        url:
-          "http://my.jasminsoftware.com/api/" +
-          process.env.USER +
-          "/" +
-          process.env.SUBSCRIPTION +
-          url,
-        method: method,
+        url: `http://my.jasminsoftware.com/api/${process.env.USER}/${process.env.SUBSCRIPTION}/${url}`,
+        method,
         headers: {
-          Authorization: `bearer ${process.env.TOKEN}`,
-          "Content-Type": "application/json",
+          Authorization: `bearer ${token}`,
+          'Content-Type': 'application/json',
         },
         form: {
-          scope: "application",
+          scope: 'application',
         },
         body: data,
       },
-      function (error, res) {
+      (error, res) => {
         if (!error && res.statusCode === 200) {
           resolve(JSON.parse(res.body));
         } else {
           reject(error);
         }
-      }
+      },
     );
   });
-};
 
 export default doRequest;
