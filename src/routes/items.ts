@@ -1,12 +1,32 @@
 import express, { Request, Response } from 'express';
 import { IItems } from '../interfaces/interfaces';
-import { getAllUsers, getAllItems, getAllEmails } from '../lib/utils';
+import {
+  getAllUsersJ,
+  getAllItemsJ,
+  getAllEmailsJ,
+  createUserE,
+  createItemE,
+  addClientJ,
+  getAllItemsE,
+} from '../lib/utils';
+declare global {
+  namespace Express {
+    interface Request {
+      token: string;
+      edToken: string;
+    }
+  }
+}
 
 const router = express.Router();
 
 router.get('/teste', async (req: Request, res: Response) => {
   try {
-    res.send({ token: req.token });
+    console.log('bizagi entrou');
+    const { token } = req;
+    console.log(token);
+    const data = await addClientJ('jorge', token);
+    res.send(data);
   } catch (error) {
     console.log(`Error ${error}`);
     throw new Error(`${error}`);
@@ -16,7 +36,7 @@ router.get('/teste', async (req: Request, res: Response) => {
 router.get('/emails', async (req: Request, res: Response) => {
   try {
     const { token } = req;
-    const emails = await getAllEmails(token);
+    const emails = await getAllEmailsJ(token);
     res.send(emails);
   } catch (error) {
     console.log(`Error ${error}`);
@@ -27,7 +47,7 @@ router.get('/emails', async (req: Request, res: Response) => {
 router.get('/items', async (req: Request, res: Response) => {
   try {
     const { token } = req;
-    const items: IItems = await getAllItems(token);
+    const items: IItems = await getAllItemsJ(token);
     res.send(items);
   } catch (error) {
     console.log(`Error ${error}`);
@@ -42,7 +62,7 @@ router.get('/clients', async (req: Request, res: Response) => {
     if (req.query && req.query.name) {
       clientName = (req.query as any).name;
     }
-    const clients = await getAllUsers(token, clientName);
+    const clients = await getAllUsersJ(token, clientName);
     // API para criar cliente foi movida para outro endpoint
     // if (!clients[0]) {
     //   console.log("hey");

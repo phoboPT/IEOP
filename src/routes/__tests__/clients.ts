@@ -4,14 +4,11 @@ import { app } from '../../app';
 
 it('Return 1 client if it exists ', async () => {
   const res = await request(app).get('/api/clients?name=Joana Amaral');
-  console.log(res);
-
   expect(res.body.length).toEqual(1);
 });
 
 it('Return 0 client if it not exists ', async () => {
   const res = await request(app).get('/api/clients?name=Joana');
-  console.log(res);
   expect(res.body.length).toEqual(0);
 });
 
