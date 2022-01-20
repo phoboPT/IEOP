@@ -18,16 +18,18 @@ const doRequest = (
           Authorization: `bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        form: {
-          scope: 'application',
-        },
+        // form: {
+        //   scope: 'application',
+        // },
+        json: true,
         body: data,
       },
       (error, res) => {
         console.log(res.body);
-        if (!error && res.statusCode === 200) {
-          resolve(JSON.parse(res.body));
+        if (!error) {
+          resolve(res.body);
         } else {
+          console.log('error', error);
           reject(error);
         }
       },
@@ -53,7 +55,7 @@ const edRequest = (
         json: true,
       },
       (error, res) => {
-        console.log(error);
+        console.log(res.body);
         if (!error) {
           resolve(res.body);
         } else {

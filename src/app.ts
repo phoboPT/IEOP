@@ -1,4 +1,4 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, Response, Request } from 'express';
 /* eslint-disable import/prefer-default-export */
 import express from 'express';
 import 'express-async-errors';
@@ -43,7 +43,6 @@ const getTokens = () => {
         token = json.access_token;
       } else {
         console.log('Could not obtain Jasmin access token.');
-        throw new Error('Index, Could not obtain access token.');
       }
     },
   );
@@ -71,7 +70,6 @@ const getTokens = () => {
         edToken = res.headers['set-cookie'];
       } else {
         console.log('Could not obtain Eticadata access token.');
-        throw new Error('Index, Could not obtain access token.');
       }
     },
   );
@@ -79,8 +77,8 @@ const getTokens = () => {
 
 app.use('/api/', router);
 
-app.all('*', async () => {
-  throw new Error("Index, /BAD_URL, route don't exist");
+app.all('*', async (req: Request, res: Response) => {
+  res.status(404).send("Index, /BAD_URL, route don't exist");
 });
 
 app.use(errorHandler);
