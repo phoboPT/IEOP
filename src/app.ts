@@ -12,16 +12,13 @@ const app = express();
 
 const middleware = (req: any, res: Response, next: NextFunction): void => {
   req.token = token;
-  req.edToken = edToken;
   next();
 };
-
 app.set('trust proxy', true);
 app.use(json());
 app.use(middleware);
 router.use(itemsRouter);
 let token: string = '';
-let edToken: string[];
 
 const getTokens = () => {
   request(
@@ -43,33 +40,6 @@ const getTokens = () => {
         token = json.access_token;
       } else {
         console.log('Could not obtain Jasmin access token.');
-      }
-    },
-  );
-
-  request(
-    {
-      url: `https://edata-cust-s01.westeurope.cloudapp.azure.com/erpv19/api/Shell/LoginUser`,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      rejectUnauthorized: false,
-      body: {
-        login: process.env.LOGIN,
-        password: process.env.PASSWORD,
-        idioma: process.env.LANGUAGE,
-        server: process.env.SERVER,
-        sistema: process.env.SYSTEM,
-      },
-
-      json: true,
-    },
-    function (err, res) {
-      if (res) {
-        edToken = res.headers['set-cookie'];
-      } else {
-        console.log('Could not obtain Eticadata access token.');
       }
     },
   );

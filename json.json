@@ -1,0 +1,13 @@
+{
+  "imputs": [
+    {
+      "produtos": "Grafica",
+      "quantidade": 2
+    },
+    {
+      "produtos": "Disco",
+      "quantidade": 1
+    }
+  ],
+  "cliente": "teste"
+}

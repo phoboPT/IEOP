@@ -25,7 +25,7 @@ const doRequest = (
         body: data,
       },
       (error, res) => {
-        console.log(res.body);
+        // console.log(res.body);
         if (!error) {
           resolve(res.body);
         } else {
@@ -36,33 +36,4 @@ const doRequest = (
     );
   });
 
-const edRequest = (
-  url: string,
-  token: string,
-  data?: Record<string, unknown>,
-  method = 'GET',
-): any =>
-  new Promise((resolve, reject): any => {
-    request(
-      {
-        url: `https://edata-cust-s01.westeurope.cloudapp.azure.com/erpv19/api/${url}`,
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Cookie: token,
-        },
-        body: data,
-        json: true,
-      },
-      (error, res) => {
-        console.log(res.body);
-        if (!error) {
-          resolve(res.body);
-        } else {
-          reject(error);
-        }
-      },
-    );
-  });
-
-export { doRequest, edRequest };
+export { doRequest };

@@ -6,6 +6,7 @@ interface IItemPrice {
   priceAmount: IPrice;
 }
 interface IItem {
+  includes(string);
   itemKey: string;
   description: string;
   complementaryDescription: string;
