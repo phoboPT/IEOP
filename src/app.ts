@@ -9,17 +9,15 @@ import request from 'request';
 require('dotenv').config();
 const router = express.Router();
 const app = express();
+app.set('trust proxy', true);
+app.use(json());
+
+let token: string = '';
 
 const middleware = (req: any, res: Response, next: NextFunction): void => {
   req.token = token;
   next();
 };
-app.set('trust proxy', true);
-app.use(json());
-app.use(middleware);
-router.use(itemsRouter);
-let token: string = '';
-
 const getTokens = () => {
   request(
     {
@@ -45,12 +43,12 @@ const getTokens = () => {
   );
 };
 
+router.use(itemsRouter);
 app.use('/api/', router);
-
 app.all('*', async (req: Request, res: Response) => {
   res.status(404).send("Index, /BAD_URL, route don't exist");
 });
-
+app.use(middleware);
 app.use(errorHandler);
 
 getTokens();

@@ -15,36 +15,10 @@ declare global {
 
 const router = express.Router();
 
-router.get('/teste', async (req: Request, res: Response) => {
-  await transport.sendMail({
-    from: 'picus@gmail.com',
-    to: 'example@gmail.com',
-    subject: 'Recolha Equipamento - Reparação concluida',
-    html: makeANiceEmail(`Poderá recolher o equipamento a partir de 24/01/2022      \n\n
-
-        
-      `),
-  });
-  // await transport.sendMail({
-  //   from: 'teste@gmail.com',
-  //   to: 'example@foo.com',
-  //   subject: 'Fatura',
-  //   text: 'Factura da reparação em anexo',
-  //   attachments: [
-  //     {
-  //       filename: 'file.pdf',
-  //       path: 'C:/Users/Phobo/Desktop/IEOP/FR.2022.2.pdf',
-  //       contentType: 'application/pdf',
-  //     },
-  //   ],
-  // });
-  res.send('ok');
-});
-
 router.post('/orcamento', async (req: Request, res: Response) => {
   try {
     const { token } = req;
-
+    console.log(`Pedido de orçamento`);
     let totalValue = 0;
     const products = await getAllItemsJ(token);
     products.forEach(async (product) => {
@@ -57,8 +31,8 @@ router.post('/orcamento', async (req: Request, res: Response) => {
         }
       });
     });
-
-    res.send({ precoTotal: totalValue });
+    console.log('Preço total: ' + totalValue);
+    res.status(200).send({ precoTotal: totalValue });
   } catch (error) {
     console.log(`Error ${error}`);
     throw new Error(`${error}`);
@@ -67,9 +41,9 @@ router.post('/orcamento', async (req: Request, res: Response) => {
 
 router.post('/sendEmail', async (req: Request, res: Response) => {
   const { email, data } = req.body;
-
+  console.log(`Enviar Email: ${email}`);
   await transport.sendMail({
-    from: 'picus@gmail.com',
+    from: 'pczone@pczone.com',
     to: email,
     subject: 'Recolha Equipamento',
     html: makeANiceEmail(`Poderá recolher o equipamento no dia ${data}      \n\n
@@ -77,14 +51,19 @@ router.post('/sendEmail', async (req: Request, res: Response) => {
         
       `),
   });
-
+  console.log('Email enviado');
   res.status(200).send('ok');
 });
 
 router.post('/invoiceJ', async (req: any, res: Response) => {
   try {
     const { token } = req;
-    const { cliente, imputs, email } = req.body;
+    const { imputs, cliente } = req.body;
+
+    console.log(`Pedido de orçamento: ${imputs}
+    
+      Email: ${cliente}
+    `);
     const finalCart = [];
     const products = await getAllItemsJ(token);
     products.forEach(async (product) => {
@@ -94,8 +73,8 @@ router.post('/invoiceJ', async (req: any, res: Response) => {
         ) {
           const item = {
             item: product.itemKey,
-            quantity: 20,
-            ammount: 10,
+            quantity: prod.quantidade,
+            ammount: product.priceListLines[0].priceAmount.amount,
           };
           finalCart.push(item);
         }
@@ -136,21 +115,24 @@ router.post('/invoiceJ', async (req: any, res: Response) => {
 
     const id = await doRequest('/billing/invoices', token, purchase, 'POST');
 
-    const invoice = await doRequest(
-      `billing/invoices/${id}/print?template=Billing_MaterialsInvoiceReport`,
-      token,
-    );
-
+    console.log('ID da fatura: ' + id);
     await transport.sendMail({
-      from: 'picus@gmail.com',
-      to: email,
-      subject: 'Recolha Equipamento',
-      attachements: invoice,
-      html: makeANiceEmail(`factura     \n\n
+      from: 'pczone@pczone.com',
+      to: cliente,
+      subject: 'Fatura',
+      html: makeANiceEmail(`Fatura da reparação em anexo    \n\n
   
           
-        `),
+         `),
+      attachments: [
+        {
+          filename: 'file.pdf',
+          path: 'Z:/FR.2022.8.pdf',
+          contentType: 'application/pdf',
+        },
+      ],
     });
+    console.log('Fatura enviada');
     res.status(200).send('ok');
   } catch (error) {
     console.log(`Error Invoice: ${error}`);

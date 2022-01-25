@@ -14,7 +14,7 @@ const makeANiceEmail = (text) => `
 border: 1px solid black;
 padding: 20px;
 font-Size:20px;">
-<h2>Recolha de equipamento em loja!</h2>
+<h2>PC ZONE, reparação de computadores</h2>
 <p>${text}</p>
 </div>`;
 
